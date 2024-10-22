@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Validation 1</title>
+    <style>
+        /* Basic styles for the body and form */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #242424;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+        }
+
+        form {
+            background-color: #333;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            max-width: 100%;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #fff;
+            margin-bottom: 30px;
+        }
+
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+            color: #bbb;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="password"] {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 20px;
+            border: none;
+            border-radius: 15px;
+            background-color: #444;
+            color: #ddd;
+        }
+
+        input[type="submit"] {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 15px;
+            background-color: #5e5e5e;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #737373;
+        }
+
+        /* Alert styles */
+        .alert {
+            position: fixed;
+            top: 20%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            padding: 15px;
+            border-radius: 8px;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.5s ease, transform 0.5s ease;
+            display: none;
+        }
+
+        .alert.success {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .alert.error {
+            background-color: #f44336;
+            color: white;
+        }
+
+        .visible {
+            display: block;
+            opacity: 1;
+            transform: translate(-50%, -50%) translateY(-20px);
+        }
+    </style>
+</head>
+<body>
+    <form id="registrationForm" onsubmit="return validateForm()">
+        <h2>Registration Form</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" >
+        <div id="nameError" class="error"></div>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" >
+        <div id="emailError" class="error"></div>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password">
+        <div id="passwordError" class="error"></div>
+
+        <input class="register-button" type="submit" value="Register">
+        <div id="successMessage" class="success" style="display: none;">Registration Successful!</div>
+    </form>
+
+    <div class="visit-us">
+        <span class="icon-container">
+            <a href="https://github.com/Supreme-Soft/form-validation-js" class="icon-link github-icon" target="_blank">
+                <i class="fab fa-github fa-lg"></i>
+            </a>
+        </span>
+        <span class="icon-container">
+            <a href="https://codepen.io/Supreme-Soft/pen/OJqeErL" class="icon-link codepen-icon" target="_blank">
+                <i class="fab fa-codepen fa-lg"></i>
+            </a>
+        </span>
+    </div>
+
+    <!-- Alert Elements -->
+    <div id="alert" class="alert"></div>
+
+    <!-- Validation Script -->
+    <script>
+        function showAlert(message, type) {
+            const alert = document.getElementById('alert');
+            alert.innerHTML = message;
+            alert.className = `alert ${type} visible`;
+
+            // Hide the alert after 2 seconds
+            setTimeout(() => {
+                alert.className = `alert ${type}`;
+                setTimeout(() => { alert.style.display = 'none'; }, 500); // Wait for fade-out before hiding
+            }, 2000);
+        }
+
+        function validateForm() {
+            let name = document.getElementById('name').value;
+            let email = document.getElementById('email').value;
+            let password = document.getElementById('password').value;
+
+            let nameError = document.getElementById('nameError');
+            let emailError = document.getElementById('emailError');
+            let passwordError = document.getElementById('passwordError');
+            let successMessage = document.getElementById('successMessage');
+
+            let valid = true;
+
+            nameError.innerHTML = '';
+            emailError.innerHTML = '';
+            passwordError.innerHTML = '';
+
+            if (name === '') {
+                nameError.innerHTML = 'Name is required';
+                valid = false;
+            }
+
+            if (email === '') {
+                emailError.innerHTML = 'Email is required';
+                valid = false;
+            } else if (!/\S+@\S+\.\S+/.test(email)) {
+                emailError.innerHTML = 'Invalid email address';
+                valid = false;
+            }
+
+            if (password === '') {
+                passwordError.innerHTML = 'Password is required';
+                valid = false;
+            } else if (password.length < 6) {
+                passwordError.innerHTML = 'Password must be at least 6 characters';
+                valid = false;
+            }
+
+            if (valid) {
+                successMessage.style.display = 'block';
+                showAlert('Registration Successful!', 'success');
+                setTimeout(function () {
+                    successMessage.style.display = 'none';
+                    document.getElementById('registrationForm').reset();
+                }, 2000);
+            } else {
+                showAlert('Please correct the errors in the form.', 'error');
+            }
+
+            return false; // Prevent form submission
+        }
+    </script>
+</body>
+</html>
